@@ -1,11 +1,16 @@
+require('dotenv/config')
 const express = require ('express')
 const path = require ('path')
 const bodyParser = require('body-parser')
 const { promisify } = require('util')
 const sgMail = require('@sendgrid/mail');
-
 const GoogleSpreadsheet = require('google-spreadsheet')
+
+//Require you own JSON key file from Google API
+
 const credentials = require('./bugtrackerkey.json')
+
+//----------------------------------------------
 
 const app = express()
 
@@ -13,12 +18,7 @@ app.set('view engine', 'ejs')
 app.set('views', path.resolve(__dirname, 'views'))
 
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static("public"))
-
-//Configurations
-const docId = '1cI8_UL1DCiXH8eNsQWScFutl3PJvm9FscHFgWNmr2P0'
-const worksheetIndex = 0
-const sendGridKey = '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'
+app.use(express.static('public'))
 
 app.get('/', (req, res) => {
     res.render('home')
@@ -28,9 +28,12 @@ app.get('/about', (req, res) => {
     res.render('about')
 })
 
+//Config tab inside spreadsheet
+const worksheetIndex = 0
+
 app.post('/', async (req, res) => {
     try{
-    const doc = new GoogleSpreadsheet(docId)
+    const doc = new GoogleSpreadsheet(process.env.DOC_ID)
     await promisify(doc.useServiceAccountAuth)(credentials)
     //console.log('Spreadsheet opened')
     const info = await promisify(doc.getInfo)()    
@@ -39,7 +42,7 @@ app.post('/', async (req, res) => {
     if (!source){   
         source = 'direct'
     }
-    console.log(source)
+    //console.log(source)
     const worksheet = info.worksheets[worksheetIndex]
     await promisify(worksheet.addRow)({ 
                 name,
@@ -56,11 +59,11 @@ app.post('/', async (req, res) => {
         // If CRITICAL
         // using Twilio SendGrid's v3 Node.js Library
         // https://github.com/sendgrid/sendgrid-nodejs
-        // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
         if (type === 'critical'){
-            sgMail.setApiKey(sendGridKey);
+            sgMail.setApiKey(process.env.SENDGRID_API_KEY);
             const msg = {
-            to: 'gustavo.gpprado@gmail.com',
+            //change for a valid TO: email
+            to: 'xxxxxxxx@gmail.com',
             from: `${email}`,
             subject: 'CRITICAL Bug reported',
             text: `
@@ -81,4 +84,4 @@ app.post('/', async (req, res) => {
 })
         
 
-app.listen(3000, () => console.log('App running on port #3000'))
+app.listen(process.env.PORT, () => console.log(`App running on http://localhost:${process.env.PORT}`))
