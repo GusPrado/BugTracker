@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>BugTracker</title>
     <script>
-        //browser + time
+        //User browser type + current time
         document.onreadystatechange = () => {
             if(document.readyState === 'interactive') {
                 document.getElementById('userAgent').value = navigator.userAgent
@@ -18,11 +18,14 @@
 </head>
 <body>
     <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="/">BugTracker</a>
+        <a class="navbar-brand" href="/">
+            <img class="rounded" src="/images/bugtracker.png" width="200" height="50" alt="bug tracker">  
+        </a>
+        <a href="/about">about</a>
     </nav>
     <div class="container">
-        <h1> Bug Tracking Tool</h1>
-        <p>Fill out the form:</p>
+            <h1 class="text-center">BugTracker Tool</h1><br>
+            <h5 class="text-center">Please fill out the form:</h5>
         <form method="post">
         <div class="form-group">
             <label for="name">Name:</label>
@@ -37,7 +40,7 @@
             <select id="type" name="type" class="form-control">
                 <option value="">Select one</option>
                 <option value="critical">Critical</option>
-                <option value="minor_bug">Fail</option>
+                <option value="minor_bug">Failure</option>
                 <option value="enhancement">Enhancement</option>
             </select>
         </div>

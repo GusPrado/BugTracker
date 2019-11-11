@@ -13,6 +13,7 @@ app.set('view engine', 'ejs')
 app.set('views', path.resolve(__dirname, 'views'))
 
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.static("public"))
 
 //Configurations
 const docId = '1cI8_UL1DCiXH8eNsQWScFutl3PJvm9FscHFgWNmr2P0'
@@ -21,6 +22,10 @@ const sendGridKey = 'SG.I9_ecBHIQH-paXa9_9Lq8Q.Z80sYc7RWZFMG6-d12jfJsIIHRlaeyaK8
 
 app.get('/', (req, res) => {
     res.render('home')
+})
+
+app.get('/about', (req, res) => {
+    res.render('about')
 })
 
 app.post('/', async (req, res) => {
